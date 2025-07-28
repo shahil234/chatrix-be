@@ -18,10 +18,10 @@ authRouter.get(
 authRouter.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/sign-in",
+    failureRedirect: `${process.env.CLIENT_SIDE_URL}/sign-in`,
   }),
   function (req, res) {
-    res.redirect("http://localhost:3000");
+    res.redirect(process.env.CLIENT_SIDE_URL);
   }
 );
 

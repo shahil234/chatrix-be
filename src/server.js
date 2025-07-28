@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: "https://chatrix-468i1uvu9-shahil234s-projects.vercel.app/",
+    origin: process.env.CLIENT_SIDE_URL,
     credentials: true
   })
 );

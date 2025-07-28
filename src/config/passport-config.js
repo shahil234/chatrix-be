@@ -10,7 +10,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      callbackURL: `${process.env.CLIENT_SIDE_URL}/auth/google/callback`,
+      callbackURL: process.env.NODE_ENV === "development" ? "http://localhost:4001/auth/google/callback" : "https://chatrix-service.onrender.com/auth/google/callback",
     },
     GoogleAuthVerify
   )

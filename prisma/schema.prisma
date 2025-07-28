@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ROLE {
+  USER
+  ADMIN
+}
+
+model User {
+  id               String            @id @default(uuid())
+  username         String            @unique
+  email            String            @unique
+  password         String?
+  role             ROLE              @default(USER)
+  ProfileDetails   Profile?
+  SentMessages     PersonalMessage[] @relation("SentMessages")
+  ReceivedMessages PersonalMessage[] @relation("ReceivedMessages")
+  MemberShips      GroupMemberShip[]
+  GroupMessage     GroupMessage[]
+}
+
+model Profile {
+  id       String  @id @default(uuid())
+  picture  String?
+  nickName String?
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique
+}
+
+model Group {
+  id   String @id @default(uuid())
+  name String
+
+  GroupMemberShips GroupMemberShip[]
+  GroupMessage     GroupMessage[]
+
+  createdAt DateTime @default(now())
+}
+
+model GroupMemberShip {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+
+  joinedAt DateTime @default(now())
+
+  @@id([userId, groupId])
+}
+
+model GroupMessage {
+  id      String @id @default(uuid())
+  content String
+
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
+
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+
+  sentAt DateTime @default(now())
+
+  isPartiallySeen Boolean @default(false)
+  isSeen          Boolean @default(false)
+}
+
+model PersonalMessage {
+  id      String @id @default(uuid())
+  content String
+
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String
+
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  receiverId String
+
+  isPartiallySeen Boolean @default(false)
+  isSeen          Boolean @default(false)
+
+  sentAt DateTime @default(now())
+}

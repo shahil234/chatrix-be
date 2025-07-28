@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://chatrix-468i1uvu9-shahil234s-projects.vercel.app/",
     credentials: true
   })
 );
